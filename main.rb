@@ -1,16 +1,20 @@
 require 'sinatra'
 require 'json'
 require 'data_mapper'
+require 'dm-sqlite-adapter'
+require 'bcrypt'
 
 DataMapper::Logger.new($stdout, :debug)
 DataMapper.setup(:default, ENV['DATABASE_URL'] || "sqlite3://#{Dir.pwd}/development.db")
 
 class User
   include DataMapper::Resource
+  include BCrypt
 
   property :id, String, :key => true
   property :name, String
   property :email, String
+  property :password, BCryptHash
   property :created_by, String
   property :last_updated_by, String
   property :created_at, DateTime

@@ -5,6 +5,7 @@ gem 'sinatra'
 gem 'json'
 gem 'data_mapper'
 gem 'dm-sqlite-adapter'
+gem 'bcrypt'
 
 
 group :test do
