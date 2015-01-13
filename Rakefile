@@ -1,6 +1,11 @@
+require 'rubygems'
 require 'sinatra'
-require 'json'
 require 'data_mapper'
+require 'dm-core'
+require 'dm-validations'
+require 'dm-types'
+require 'dm-migrations'
+require 'dm-sqlite-adapter'
 
 DataMapper::Logger.new($stdout, :debug)
 DataMapper.setup(:default, ENV['DATABASE_URL'] || "sqlite3://#{Dir.pwd}/development.db")
@@ -104,12 +109,8 @@ class Userproject
 
 end
 
+DataMapper.auto_migrate!
 
-DataMapper.finalize
-
-get '/heartbeat' do
-  response = {status: 'alive'}
-  status 200
-  content_type :json
-  body response.to_json
-end
+task(:default) {
+  require_relative 'test'
+}

@@ -22,7 +22,7 @@ describe "Get /heartbeat" do
 end
 
 describe User do
-  let(:user) { User.new }
+  let(:user) { User.new(id: '1') }
 
   it "is an instance of User" do
     assert_instance_of User, user
@@ -35,7 +35,7 @@ describe User do
 end
 
 describe Project do
-  let(:project) { Project.new }
+  let(:project) { Project.new(id: '1') }
 
   it "is an instance of Project" do
     assert_instance_of Project, project
@@ -47,7 +47,7 @@ describe Project do
 end
 
 describe Hackathon do
-  let(:hackathon) { Hackathon.new(name: 'Hackathon 3', created_by: 'Eric G') }
+  let(:hackathon) { Hackathon.new(id: '1', name: 'Hackathon 3', created_by: 'Eric G') }
 
   it "is an instance of Hackathon" do
     assert_instance_of Hackathon, hackathon
@@ -60,7 +60,7 @@ describe Hackathon do
 end
 
 describe Group do
-  let(:group) { Group.new }
+  let(:group) { Group.new(id: '1') }
 
   it "is an instance of Group" do
     assert_instance_of Group, group
