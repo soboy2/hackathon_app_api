@@ -3,7 +3,6 @@ require 'json'
 require 'data_mapper'
 require 'dm-sqlite-adapter'
 require 'bcrypt'
-require 'warden'
 
 
 DataMapper::Logger.new($stdout, :debug)
@@ -27,6 +26,7 @@ class User
 
   has n, :userprojects
   has n, :projects, :through => :userprojects
+
 end
 
 class Project
@@ -112,6 +112,8 @@ end
 
 
 DataMapper.finalize
+
+
 
 get '/heartbeat' do
   response = {status: 'alive'}

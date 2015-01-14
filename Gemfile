@@ -6,7 +6,7 @@ gem 'json'
 gem 'data_mapper'
 gem 'dm-sqlite-adapter'
 gem 'bcrypt'
-gem 'warden'
+
 
 
 group :test do
