@@ -71,6 +71,8 @@ GEM
     stringex (1.5.1)
     tilt (1.4.1)
     uuidtools (2.1.5)
+    warden (1.2.3)
+      rack (>= 1.0)
 
 PLATFORMS
   ruby
@@ -84,3 +86,4 @@ DEPENDENCIES
   rack-test
   rake
   sinatra
+  warden

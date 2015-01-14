@@ -3,6 +3,8 @@ require 'json'
 require 'data_mapper'
 require 'dm-sqlite-adapter'
 require 'bcrypt'
+require 'warden'
+
 
 DataMapper::Logger.new($stdout, :debug)
 DataMapper.setup(:default, ENV['DATABASE_URL'] || "sqlite3://#{Dir.pwd}/development.db")
