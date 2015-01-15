@@ -123,10 +123,12 @@ post '/login' do
   user = User.first(:email => params[:email])
   if user.password == params[:password]
     user.generate_token!
-    group = user.groups.create(:name => 'Kroger')
+    group = Group.first(:name => 'Kroger')
+    user.groups << group
+    user.save
     puts group
-    {token: user.token}.to_json #giving user back a token
-    #return user groups
+    {token: user.token, group: group}.to_json #giving user back a token
+
   else
     #tell user they aren't logged in
     {error: 'You arent logged in'}.to_json

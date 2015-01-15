@@ -24,12 +24,8 @@ class User
   property :created_at, DateTime
   property :updated_at, DateTime
 
-  #has n, :usergroups
-  #has n, :groups, :through => :usergroups
-  has n, :groups, :through => Resource
 
-  #has n, :userprojects
-  #has n, :projects, :through => :userprojects
+  has n, :groups, :through => Resource
   has n, :projects, :through => Resource
 
   def generate_token!
@@ -57,9 +53,6 @@ class Project
 
   belongs_to :group
   belongs_to :hackathon
-
-  # has n, :userprojects
-  # has n, :users, :through => :userprojects
   has n, :users, :through => Resource
 
 end
@@ -78,9 +71,6 @@ class Group
 
   has n, :hackathons
   has n, :projects
-
-  # has n, :usergroups
-  # has n, :users, :through => :usergroups
   has n, :users, :through => Resource
 end
 
@@ -101,26 +91,6 @@ class Hackathon
   has n, :projects
 
 end
-
-# class Usergroup
-#   include DataMapper::Resource
-#   property :id, Serial
-#   property :created_at, DateTime
-#
-#   belongs_to :user
-#   belongs_to :group
-#
-# end
-#
-# class Userproject
-#   include DataMapper::Resource
-#   property :id, Serial
-#   property :created_at, DateTime
-#
-#   belongs_to :user
-#   belongs_to :project
-#
-# end
 
 
 DataMapper.auto_migrate!
