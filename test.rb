@@ -22,7 +22,7 @@ describe "Get /heartbeat" do
 end
 
 describe User do
-  let(:user) { User.new(id: '1') }
+  let(:user) { User.new(id: '1', email:'joe@test.com', password:'$2a$10$2aTO8GnIyg9tW0nCmCdVtO4VjSA6sdu5yzQYbiRq187ZUU1OAW1CO') }
 
   it "is an instance of User" do
     assert_instance_of User, user

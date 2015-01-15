@@ -16,18 +16,27 @@ class User
 
   property :id, String, :key => true
   property :name, String
-  property :email, String
-  property :password, BCryptHash
+  property :email, String, :format => :email_address, :required => true
+  property :password, BCryptHash, :required => true
+  property :token, String
   property :created_by, String
   property :last_updated_by, String
   property :created_at, DateTime
   property :updated_at, DateTime
 
-  has n, :usergroups
-  has n, :groups, :through => :usergroups
+  #has n, :usergroups
+  #has n, :groups, :through => :usergroups
+  has n, :groups, :through => Resource
 
-  has n, :userprojects
-  has n, :projects, :through => :userprojects
+  #has n, :userprojects
+  #has n, :projects, :through => :userprojects
+  has n, :projects, :through => Resource
+
+  def generate_token!
+    self.token = SecureRandom.urlsafe_base64(64)
+    self.save! #persist
+  end
+
 end
 
 class Project
@@ -49,8 +58,9 @@ class Project
   belongs_to :group
   belongs_to :hackathon
 
-  has n, :userprojects
-  has n, :users, :through => :userprojects
+  # has n, :userprojects
+  # has n, :users, :through => :userprojects
+  has n, :users, :through => Resource
 
 end
 
@@ -69,8 +79,9 @@ class Group
   has n, :hackathons
   has n, :projects
 
-  has n, :usergroups
-  has n, :users, :through => :usergroups
+  # has n, :usergroups
+  # has n, :users, :through => :usergroups
+  has n, :users, :through => Resource
 end
 
 class Hackathon
@@ -91,25 +102,26 @@ class Hackathon
 
 end
 
-class Usergroup
-  include DataMapper::Resource
-  property :id, Serial
-  property :created_at, DateTime
+# class Usergroup
+#   include DataMapper::Resource
+#   property :id, Serial
+#   property :created_at, DateTime
+#
+#   belongs_to :user
+#   belongs_to :group
+#
+# end
+#
+# class Userproject
+#   include DataMapper::Resource
+#   property :id, Serial
+#   property :created_at, DateTime
+#
+#   belongs_to :user
+#   belongs_to :project
+#
+# end
 
-  belongs_to :user
-  belongs_to :group
-
-end
-
-class Userproject
-  include DataMapper::Resource
-  property :id, Serial
-  property :created_at, DateTime
-
-  belongs_to :user
-  belongs_to :project
-
-end
 
 DataMapper.auto_migrate!
 
