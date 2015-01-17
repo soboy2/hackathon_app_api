@@ -1,3 +1,4 @@
+#%w[rubygems sinatra data_mapper].each{ |r| require r }
 require 'sinatra'
 require 'json'
 require 'data_mapper'
@@ -93,17 +94,23 @@ end
 DataMapper.finalize
 
 def authenticate!
-  @user = User.first(:token => @request_payload[:token])
+  @user = User.first(:token => @access_token)
   halt 403 unless @user
 end
 
 before do
   begin
+    if request.env["HTTP_ACCESS_TOKEN"].is_a?(String)
+      @access_token = request.env["HTTP_ACCESS_TOKEN"]
+    end
+
     if request.body.read(1)
       request.body.rewind
       @request_payload = JSON.parse request.body.read, { symbolize_names: true}
       #puts @request_payload
+
     end
+
   rescue JSON::ParserError => e
     request.body.rewind
     puts "The body #{request.body.read} was not JSON"
@@ -122,7 +129,9 @@ post '/login' do
 
   user = User.first(:email => params[:email])
   if user.password == params[:password]
-    user.generate_token!
+    if(user.token == nil)
+      user.generate_token!
+    end
     group = Group.first(:name => 'Kroger')
     user.groups << group
     user.save
@@ -135,7 +144,8 @@ post '/login' do
   end
 end
 
-get '/protected' do
+get '/user/groups' do
   authenticate!
-  #do_something_with_user(@user)
+  {user: @user.id, groups: @user.groups}.to_json
+
 end
