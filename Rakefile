@@ -6,6 +6,7 @@ require 'dm-validations'
 require 'dm-types'
 require 'dm-migrations'
 require 'dm-sqlite-adapter'
+require 'dm-postgres-adapter'
 require 'bcrypt'
 
 DataMapper::Logger.new($stdout, :debug)

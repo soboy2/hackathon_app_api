@@ -3,6 +3,7 @@ require 'sinatra'
 require 'json'
 require 'data_mapper'
 require 'dm-sqlite-adapter'
+require 'dm-postgres-adapter'
 require 'bcrypt'
 
 
