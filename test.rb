@@ -1,3 +1,10 @@
+#what to test in API
+#was the web request successful with right response format?
+#was the user directed to right resource?
+#was the user successfully authenticated?
+#was the correct object sent in the response?
+#was the appropriate message sent to user?
+
 ENV['RACK_ENV'] = 'test'
 require 'minitest/autorun'
 require 'rack/test'
@@ -13,12 +20,41 @@ describe "Get /heartbeat" do
   before { get '/heartbeat' }
   let(:response) { JSON.parse(last_response.body) }
 
+  it "responds successfully" do
+    assert last_response.ok?
+  end
 
   it "should return json" do
     last_response.headers['Content-Type'].must_equal 'application/json'
   end
 
-  it { response['status'].must_equal 'alive'}
+  it { response['status'].must_equal 'alive' }
+end
+
+describe "Post /login" do
+
+  before do
+    post('/login', {
+      user: {
+        email: 'fola@test.com',
+        password: 'test'
+      }
+    })
+  end
+
+  let(:response) { JSON.parse(last_response.body) }
+
+  # it "responds successfully" do
+  #   assert last_response.ok?
+  # end
+
+  # it "should return json" do
+  #    last_response.headers['Content-Type'].must_equal 'application/json'
+  #
+  # end
+
+  # it { response['token'].is_a?(String) }
+  # it { response['group'].must_equal 'alive' }
 end
 
 describe User do

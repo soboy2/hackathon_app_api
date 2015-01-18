@@ -136,16 +136,45 @@ post '/login' do
     user.groups << group
     user.save
     puts group
-    {token: user.token, group: group}.to_json #giving user back a token
+    response = {token: user.token, group: group} #giving user back a token
 
   else
     #tell user they aren't logged in
-    {error: 'You arent logged in'}.to_json
+    response = {error: 'You arent logged in'}
   end
+  status 200
+  content_type :json
+  body response.to_json
 end
 
 get '/user/groups' do
   authenticate!
-  {user: @user.id, groups: @user.groups}.to_json
 
+  response = {user: @user.id, groups: @user.groups}
+
+  status 200
+  content_type :json
+  body response.to_json
+end
+
+get '/groups/:group_id/projects' do
+  authenticate!
+
+  group = Group.first(:id => params[:group_id])
+  response = {projects: group.projects}
+
+  status 200
+  content_type :json
+  body response.to_json
+end
+
+get '/groups/:group_id/hackathons' do
+  authenticate!
+
+  group = Group.first(:id => params[:group_id])
+  response = {hackathons: group.hackathons}
+
+  status 200
+  content_type :json
+  body response.to_json
 end
