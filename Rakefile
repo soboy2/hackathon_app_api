@@ -5,7 +5,7 @@ require 'dm-core'
 require 'dm-validations'
 require 'dm-types'
 require 'dm-migrations'
-require 'dm-sqlite-adapter'
+#require 'dm-sqlite-adapter'
 require 'dm-postgres-adapter'
 require 'bcrypt'
 
