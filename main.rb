@@ -185,6 +185,7 @@ post '/hackathons' do
     hackathon = Hackathon.first_or_create(
                   :id => params[:id],
                   :name => params[:name] ,
+                  :hack_date => Date.parse(params[:hack_date]),
                   :created_at => Time.now,
                   :updated_at => Time.now
               )
@@ -219,7 +220,7 @@ end
 
 post '/login' do
   params = @request_payload[:user]
-
+  puts "***** User " + params[:email] +" attempting to login"
   user = User.first(:email => params[:email])
   if user.password == params[:password]
     if(user.token == nil)
@@ -229,7 +230,7 @@ post '/login' do
     user.groups << group
     user.save
     puts group
-    response = {token: user.token, group: group} #giving user back a token
+    response = {token: user.token, id: user.id, name: user.name, email: user.email, group: group} #giving user back a token
 
   else
     #tell user they aren't logged in
@@ -240,15 +241,6 @@ post '/login' do
   body response.to_json
 end
 
-#add a user to a group
-post '/user/groups' do
-  authenticate!
-  params = @request_payload[:user]
-  group = Group.first(:id => params[:project_id])
-
-  @user.groups << group
-  @user.save
-end
 
 get '/user/groups' do
   authenticate!
@@ -282,11 +274,27 @@ get '/groups/:group_id/hackathons' do
   body response.to_json
 end
 
+#add a user to a group
+post '/user/groups' do
+  user = User.first(:id => @request_payload[:user_id])
+  group = Group.first(:id => @request_payload[:group_id])
+
+  user.groups << group
+  if user.save
+    status 200
+    content_type :json
+    response = {status: 'success'}
+    body response.to_json
+  else
+    status 400
+  end
+
+end
+
 #add a project to a group
-post '/group/projects/' do
-  params = @request_payload[:group]
-  group = Group.first(:id => params[:project_id])
-  project = Project.first(:id => params[:group_id])
+post '/group/projects' do
+  group = Group.first(:id => @request_payload[:group_id])
+  project = Project.first(:id => @request_payload[:project_id])
   group.projects << project
   if group.save
     status 200
@@ -299,10 +307,9 @@ post '/group/projects/' do
 end
 
 #add a hackathon to a group
-post '/group/hackathons/' do
-  params = @request_payload[:group]
-  group = Group.first(:id => params[:project_id])
-  hackathon = Hackathon.first(:id => params[:hackathon_id])
+post '/group/hackathons' do
+  group = Group.first(:id => @request_payload[:group_id])
+  hackathon = Hackathon.first(:id => @request_payload[:hackathon_id])
   group.hackathons << hackathon
   if group.save
     status 200
