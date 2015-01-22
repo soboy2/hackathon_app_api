@@ -25,7 +25,7 @@ class User
   property :name, String
   property :email, String, :format => :email_address, :required => true
   property :password, BCryptHash, :required => true
-  property :token, String
+  property :token, Text
   property :created_by, String
   property :last_updated_by, String
   property :created_at, DateTime
