@@ -133,6 +133,90 @@ get '/heartbeat' do
   body response.to_json
 end
 
+post '/users' do
+  params = @request_payload[:user]
+  if params.nil?
+    status 400
+  else
+    user = User.first_or_create(
+            :name => params[:name],
+            :password => params[:password],
+            :id => params[:id],
+            :email => params[:email],
+            :created_at => Time.now,
+            :updated_at => Time.now
+          )
+    user.save
+    status 200
+    puts "***** added a new user @ " + user.id.to_s
+    content_type :json
+    response = {status: 'success', id: user.id}
+    body response.to_json
+  end
+end
+
+post '/projects' do
+  params = @request_payload[:project]
+  if params.nil?
+    status 400
+  else
+    project = Project.first_or_create(
+                :id => params[:id],
+                :name => params[:name],
+                :description => params[:description],
+                :status => params[:status],
+                :created_at => Time.now,
+                :updated_at => Time.now
+              )
+    project.save
+    status 200
+    puts "***** added a new project @ " + project.id.to_s
+    content_type :json
+    response = {status: 'success', id: project.id}
+    body response.to_json
+  end
+end
+
+post '/hackathons' do
+  params = @request_payload[:hackathon]
+  if params.nil?
+    status 400
+  else
+    hackathon = Hackathon.first_or_create(
+                  :id => params[:id],
+                  :name => params[:name] ,
+                  :created_at => Time.now,
+                  :updated_at => Time.now
+              )
+    hackathon.save
+    status 200
+    puts "***** added a new  @ " + hackathon.id.to_s
+    content_type :json
+    response = {status: 'success', id: hackathon.id}
+    body response.to_json
+  end
+end
+
+post '/groups' do
+  params = @request_payload[:group]
+  if params.nil?
+    status 400
+  else
+    group = Group.first_or_create(
+    :id => params[:id],
+    :name => params[:name] ,
+    :created_at => Time.now,
+    :updated_at => Time.now
+    )
+    group.save
+    status 200
+    puts "***** added a new  @ " + group.id.to_s
+    content_type :json
+    response = {status: 'success', id: group.id}
+    body response.to_json
+  end
+end
+
 post '/login' do
   params = @request_payload[:user]
 
@@ -154,6 +238,16 @@ post '/login' do
   status 200
   content_type :json
   body response.to_json
+end
+
+#add a user to a group
+post '/user/groups' do
+  authenticate!
+  params = @request_payload[:user]
+  group = Group.first(:id => params[:project_id])
+
+  @user.groups << group
+  @user.save
 end
 
 get '/user/groups' do
@@ -186,4 +280,36 @@ get '/groups/:group_id/hackathons' do
   status 200
   content_type :json
   body response.to_json
+end
+
+#add a project to a group
+post '/group/projects/' do
+  params = @request_payload[:group]
+  group = Group.first(:id => params[:project_id])
+  project = Project.first(:id => params[:group_id])
+  group.projects << project
+  if group.save
+    status 200
+    content_type :json
+    response = {status: 'success'}
+    body response.to_json
+  else
+    status 400
+  end
+end
+
+#add a hackathon to a group
+post '/group/hackathons/' do
+  params = @request_payload[:group]
+  group = Group.first(:id => params[:project_id])
+  hackathon = Hackathon.first(:id => params[:hackathon_id])
+  group.hackathons << hackathon
+  if group.save
+    status 200
+    content_type :json
+    response = {status: 'success'}
+    body response.to_json
+  else
+    status 400
+  end
 end
